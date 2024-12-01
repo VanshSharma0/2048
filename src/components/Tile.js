@@ -1,10 +1,11 @@
 import React from 'react';
 import '../styles/Tile.css';
 
-const Tile = ({ value }) => {
+const Tile = ({ value, isNew }) => {
   const getTileClass = () => {
     if (!value) return 'tile empty';
-    return `tile tile-${value}`;
+    const baseClass = `tile tile-${value}`;
+    return isNew ? `${baseClass} new-tile` : baseClass;
   };
 
   return (

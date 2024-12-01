@@ -1,13 +1,8 @@
 .game-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  .score-board {
-    font-size: 24px;
-    margin-bottom: 20px;
+    justify-content: center;
+    gap: 30px;
   }
   
   .grid {
@@ -18,15 +13,142 @@
     background-color: #bbada0;
     padding: 10px;
     border-radius: 5px;
+    position: relative;
   }
   
-  .controls {
-    margin-top: 20px;
+  .tile {
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    opacity: 1;
   }
   
-  .controls button {
-    padding: 10px 20px;
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  
+  @keyframes slide-down {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+  
+  @keyframes slide-left {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  
+  @keyframes slide-right {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+  
+  @keyframes pop-in {
+    0% { transform: scale(0); }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .tile.new-tile {
+    animation: pop-in 0.2s ease-out;
+  }
+  
+  .keyboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 5px 0;
+  }
+  
+  .direction-key {
+    width: 60px;
+    height: 60px;
+    background-color: #3c3c3c;
+    border: none;
+    border-radius: 5px;
+    color: white;
     font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .direction-key::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg, 
+      transparent, 
+      rgba(255,255,255,0.1), 
+      transparent
+    );
+    transform: rotate(-45deg);
+    transition: all 0.3s ease;
+  }
+  
+  .direction-key:hover::before {
+    top: 100%;
+    left: 100%;
+  }
+  
+  .direction-key:hover {
+    background-color: #4c4c4c;
+    transform: scale(1.05);
+  }
+  
+  .direction-key:active {
+    background-color: #5c5c5c;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: scale(0.95);
+  }
+  
+  .up-key {
+    grid-area: up;
+  }
+  
+  .down-key {
+    grid-area: down;
+  }
+  
+  .left-key {
+    grid-area: left;
+  }
+  
+  .right-key {
+    grid-area: right;
+  }
+  
+  .keyboard-navigation {
+    display: grid;
+    grid-template-areas: 
+      ". up ."
+      "left . right"
+      ". down .";
+    gap: 10px;
   }

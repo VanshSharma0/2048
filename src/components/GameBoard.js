@@ -28,6 +28,7 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
 
   // Use state for grid
   const [gridState, setGridState] = useState(createInitialGrid());
+  const [newTiles, setNewTiles] = useState([]);
 
   // Initial tile placement
   useEffect(() => {
@@ -120,10 +121,14 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
     // Only update if move is valid
     if (moved) {
       setGridState(finalGrid);
-      onScoreChange(newScore);
       const newGridWithRandomTile = addRandomTile(finalGrid);
       if (newGridWithRandomTile) {
         setGridState(newGridWithRandomTile);
+        const newTilePosition = newGridWithRandomTile.flatMap((row, i) =>
+          row.map((cell, j) => (cell && !gridState[i][j] ? `${i}-${j}` : null))
+        ).filter(Boolean);
+        setNewTiles(newTilePosition);
+      }
       }
     }
   }, [gridState, currentScore, rotateGrid, moveLeft, onScoreChange, addRandomTile]);
@@ -157,16 +162,52 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
 
   return (
     <div className="game-container">
-      <div className="grid">
+      <div className="grid" style={{ position: 'relative' }}>
         {gridState.map((row, i) =>
-          row.map((tile, j) => <Tile key={`${i}-${j}`} value={tile} />)
+          row.map((tile, j) => {
+            const key = `${i}-${j}`;
+            return (
+              <Tile 
+                key={key} 
+                value={tile} 
+                isNew={tile && newTiles.includes(key)}
+                style={{
+                  position: 'absolute',
+                  top: `${i * 110}px`,
+                  left: `${j * 110}px`
+                }}
+              />
+            );
+          })
         )}
       </div>
-      <div className="controls">
-        <button onClick={() => handleMove("up")}>Up</button>
-        <button onClick={() => handleMove("left")}>Left</button>
-        <button onClick={() => handleMove("down")}>Down</button>
-        <button onClick={() => handleMove("right")}>Right</button>
+      <div className="keyboard-container">
+        <div className="keyboard-navigation">
+          <button 
+            className="direction-key up-key" 
+            onClick={() => handleMove("up")}
+          >
+            ▲
+          </button>
+          <button 
+            className="direction-key down-key" 
+            onClick={() => handleMove("down")}
+          >
+            ▼
+          </button>
+          <button 
+            className="direction-key left-key" 
+            onClick={() => handleMove("left")}
+          >
+            ◀
+          </button>
+          <button 
+            className="direction-key right-key" 
+            onClick={() => handleMove("right")}
+          >
+            ▶
+          </button>
+        </div>
       </div>
     </div>
   );
