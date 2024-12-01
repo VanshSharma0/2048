@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #faf8ef;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+header h1 {
+  color: #776e65;
+  font-size: 36px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.game-instructions {
+  margin-top: 20px;
+  text-align: center;
+  color: #776e65;
+  max-width: 400px;
+}

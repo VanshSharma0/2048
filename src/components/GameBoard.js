@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Tile from "./Tile";
-import "./GameBoard.css";
+import "../styles/GameBoard.css";
 
-const GameBoard = () => {
-  const [grid, setGrid] = useState(createInitialGrid());
-  const [score, setScore] = useState(0);
-
-  // Initialize the game with two random tiles
-  useEffect(() => {
-    addRandomTile();
-    addRandomTile();
+const GameBoard = ({ onScoreChange, currentScore }) => {
+  // Helper functions defined before state
+  const createInitialGrid = useCallback(() => {
+    return Array(4).fill(null).map(() => Array(4).fill(null));
   }, []);
 
-  // Helper functions
-  const createInitialGrid = () => Array(4).fill(null).map(() => Array(4).fill(null));
-
-  const addRandomTile = () => {
+  const addRandomTile = useCallback((currentGrid) => {
+    const grid = currentGrid || [...gridState];
     let emptyCells = [];
     grid.forEach((row, i) =>
       row.forEach((cell, j) => {
@@ -28,15 +22,26 @@ const GameBoard = () => {
     const [row, col] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     const newGrid = grid.map(row => [...row]);
     newGrid[row][col] = Math.random() < 0.9 ? 2 : 4;
-    setGrid(newGrid);
-    return true;
-  };
+    
+    return newGrid;
+  }, []);
 
-  const rotateGrid = (grid) => {
+  // Use state for grid
+  const [gridState, setGridState] = useState(createInitialGrid());
+
+  // Initial tile placement
+  useEffect(() => {
+    let newGrid = addRandomTile(gridState);
+    newGrid = addRandomTile(newGrid);
+    setGridState(newGrid);
+  }, []);
+
+  // Memoize other helper functions
+  const rotateGrid = useCallback((grid) => {
     return grid[0].map((val, index) => grid.map(row => row[index]).reverse());
-  };
+  }, []);
 
-  const moveLeft = (row) => {
+  const moveLeft = useCallback((row) => {
     // Remove zeros
     const filteredRow = row.filter(cell => cell !== null);
     
@@ -54,12 +59,12 @@ const GameBoard = () => {
     }
     
     return filteredRow;
-  };
+  }, []);
 
-  const handleMove = (direction) => {
-    let rotatedGrid = [...grid];
+  const handleMove = useCallback((direction) => {
+    let rotatedGrid = [...gridState];
     let moved = false;
-    let newScore = score;
+    let newScore = currentScore;
 
     // Rotate grid to always move left
     switch (direction) {
@@ -114,11 +119,14 @@ const GameBoard = () => {
 
     // Only update if move is valid
     if (moved) {
-      setGrid(finalGrid);
-      setScore(newScore);
-      addRandomTile();
+      setGridState(finalGrid);
+      onScoreChange(newScore);
+      const newGridWithRandomTile = addRandomTile(finalGrid);
+      if (newGridWithRandomTile) {
+        setGridState(newGridWithRandomTile);
+      }
     }
-  };
+  }, [gridState, currentScore, rotateGrid, moveLeft, onScoreChange, addRandomTile]);
 
   // Keyboard event handling
   useEffect(() => {
@@ -145,13 +153,12 @@ const GameBoard = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [grid, score]);
+  }, [handleMove]);
 
   return (
     <div className="game-container">
-      <div className="score-board">Score: {score}</div>
       <div className="grid">
-        {grid.map((row, i) =>
+        {gridState.map((row, i) =>
           row.map((tile, j) => <Tile key={`${i}-${j}`} value={tile} />)
         )}
       </div>
