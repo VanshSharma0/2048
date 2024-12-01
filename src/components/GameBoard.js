@@ -24,7 +24,7 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
     newGrid[row][col] = Math.random() < 0.9 ? 2 : 4;
     
     return newGrid;
-  }, []);
+  }, [gridState]);
 
   // Use state for grid
   const [gridState, setGridState] = useState(createInitialGrid());
@@ -129,9 +129,13 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
         ).filter(Boolean);
         setNewTiles(newTilePosition);
       }
-      }
     }
-  }, [gridState, currentScore, rotateGrid, moveLeft, onScoreChange, addRandomTile]);
+    
+    // Call onScoreChange if it's a prop
+    if (onScoreChange) {
+      onScoreChange(newScore);
+    }
+  }, [gridState, currentScore, rotateGrid, moveLeft, addRandomTile, onScoreChange]);
 
   // Keyboard event handling
   useEffect(() => {
