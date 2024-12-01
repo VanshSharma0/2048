@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../styles/ScoreBoard.css';
 
-const ScoreBoard = ({ score, bestScore }) => {
+const ScoreBoard = ({ currentScore, bestScore }) => {
+  useEffect(() => {
+    // Update best score in local storage if current score is higher
+    const storedBestScore = localStorage.getItem('bestScore') || 0;
+    if (currentScore > storedBestScore) {
+      localStorage.setItem('bestScore', currentScore);
+    }
+  }, [currentScore]);
+
   return (
     <div className="score-container">
       <div className="score-box">
-        <span className="score-label">Score</span>
-        <span className="score-value">{score}</span>
+        <div className="score-label">Score</div>
+        <div className="score-value">{currentScore}</div>
       </div>
       <div className="score-box">
-        <span className="score-label">Best</span>
-        <span className="score-value">{bestScore}</span>
+        <div className="score-label">Best</div>
+        <div className="score-value">{bestScore}</div>
       </div>
     </div>
   );

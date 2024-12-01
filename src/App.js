@@ -5,24 +5,9 @@ import './App.css';
 
 function App() {
   const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(() => {
-    // Retrieve best score from local storage
-    const savedBestScore = localStorage.getItem('2048-best-score');
-    return savedBestScore ? parseInt(savedBestScore) : 0;
-  });
 
-  const updateScore = (newScore) => {
+  const handleScoreChange = (newScore) => {
     setScore(newScore);
-    
-    // Update best score if necessary
-    if (newScore > bestScore) {
-      setBestScore(newScore);
-      localStorage.setItem('2048-best-score', newScore.toString());
-    }
-  };
-
-  const resetGame = () => {
-    setScore(0);
   };
 
   return (
@@ -30,13 +15,17 @@ function App() {
       <header>
         <h1>2048 Game</h1>
       </header>
-      <ScoreBoard score={score} bestScore={bestScore} />
+      <ScoreBoard 
+        currentScore={score} 
+        bestScore={localStorage.getItem('bestScore') || 0} 
+      />
       <GameBoard 
-        onScoreChange={updateScore} 
-        currentScore={score}
+        onScoreChange={handleScoreChange} 
+        currentScore={score} 
       />
       <div className="game-instructions">
-        <p>Use arrow keys or buttons to move tiles. Merge tiles with the same number!</p>
+        Use arrow keys or on-screen buttons to move tiles. 
+        Combine tiles with the same number to score points!
       </div>
     </div>
   );

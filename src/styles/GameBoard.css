@@ -152,3 +152,38 @@
       ". down .";
     gap: 10px;
   }
+
+  .game-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 10px;
+    background-color: #bbada0;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    width: 440px;  /* Fixed width to ensure consistent layout */
+    height: 440px; /* Fixed height to ensure consistent layout */
+  }
+  
+  .tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    opacity: 1;
+    box-sizing: border-box;  /* Ensures padding and border are included in width/height */
+  }

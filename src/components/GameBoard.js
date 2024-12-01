@@ -9,7 +9,7 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
   }, []);
 
   const addRandomTile = useCallback((currentGrid) => {
-    const grid = currentGrid || [...gridState];
+    const grid = currentGrid || createInitialGrid();
     let emptyCells = [];
     grid.forEach((row, i) =>
       row.forEach((cell, j) => {
@@ -17,14 +17,14 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
       })
     );
     
-    if (emptyCells.length === 0) return false;
+    if (emptyCells.length === 0) return grid;
     
     const [row, col] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     const newGrid = grid.map(row => [...row]);
     newGrid[row][col] = Math.random() < 0.9 ? 2 : 4;
     
     return newGrid;
-  }, [gridState]);
+  }, [createInitialGrid]);
 
   // Use state for grid
   const [gridState, setGridState] = useState(createInitialGrid());
@@ -35,7 +35,7 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
     let newGrid = addRandomTile(gridState);
     newGrid = addRandomTile(newGrid);
     setGridState(newGrid);
-  }, []);
+  }, [addRandomTile]);
 
   // Memoize other helper functions
   const rotateGrid = useCallback((grid) => {
@@ -166,7 +166,7 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
 
   return (
     <div className="game-container">
-      <div className="grid" style={{ position: 'relative' }}>
+      <div className="grid">
         {gridState.map((row, i) =>
           row.map((tile, j) => {
             const key = `${i}-${j}`;
@@ -176,7 +176,6 @@ const GameBoard = ({ onScoreChange, currentScore }) => {
                 value={tile} 
                 isNew={tile && newTiles.includes(key)}
                 style={{
-                  position: 'absolute',
                   top: `${i * 110}px`,
                   left: `${j * 110}px`
                 }}
